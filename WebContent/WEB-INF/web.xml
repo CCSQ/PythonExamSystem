@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+	id="WebApp_ID" version="3.1">
+	<display-name>PythonExamSystem</display-name>
+	
+	<welcome-file-list>
+		<welcome-file>/index</welcome-file>
+	</welcome-file-list>
+
+	<!-- log4j 配置 开始 -->
+	<context-param>
+		<!-- 配置文件位置，为编译后的路径 -->
+		<param-name>log4jConfigLocation</param-name>
+		<param-value>/WEB-INF/classes/com/cc/resource/log4j/log4j.properties</param-value>
+	</context-param>
+	<context-param>
+		<!-- 开一条watchdog线程每6秒扫描一下配置文件的变化 -->
+		<param-name>log4jRefreshInterval</param-name>
+		<param-value>600000</param-value>
+	</context-param>
+	<context-param>
+		<param-name>webAppRootKey</param-name>
+		<param-value>PythonExamSystem.root</param-value>
+	</context-param>
+	<listener>
+		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+	</listener>
+	<!-- log4j 配置 结束 -->
+	
+	<!-- 设置servlet编码开始 -->
+	<filter>
+		<filter-name>CharacterEncodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<!-- 指定一个具体的字符集 -->
+			<param-name>encoding</param-name>
+			<param-value>utf-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	
+	<filter-mapping>
+		<filter-name>CharacterEncodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<!-- 设置servlet编码结束 -->
+	
+	<!-- Spring配置文件开始  -->
+	<!-- 声明应用范围(整个WEB项目)内的上下文初始化参数 -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath*:com/cc/resource/spring/spring-base.xml</param-value>
+	</context-param>
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	<!-- Spring配置文件结束 -->
+	
+	<!-- 设置hibernate session的开关 开始 -->
+		<filter>
+			<filter-name>openSessionInVieFilter</filter-name>
+			<filter-class>org.springframework.orm.hibernate4.support.OpenSessionInViewFilter</filter-class>
+		</filter>
+		<filter-mapping>
+			<filter-name>openSessionInVieFilter</filter-name>
+			<servlet-name>spring</servlet-name>
+		</filter-mapping>
+	<!-- 设置hibernate session的开关 结束 -->
+	
+	<!-- 浏览器不支持put,delete等method,由该filter将/blog?_method=delete转换为标准的http delete方法 -->
+	<filter>
+		<filter-name>HiddenHttpMethodFilter</filter-name>
+		<filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>HiddenHttpMethodFilter</filter-name>
+		<servlet-name>spring</servlet-name>
+	</filter-mapping>
+	
+	<!-- spring mvc -->
+	<servlet>
+		<servlet-name>spring-dispatcher</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath*:com/cc/resource/spring/spring-dispather.xml</param-value>
+		</init-param>
+		<!-- 设置启动的优先级 -->
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>spring-dispatcher</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+
+
+	<!-- 错误页面设置 开始 -->
+	<error-page>
+		<error-code>500</error-code>
+		<location>/error.jsp?code=500</location>
+	</error-page>
+
+	<error-page>
+		<error-code>404</error-code>
+		<location>/error.jsp?code=404</location>
+	</error-page>
+	<error-page>
+		<error-code>405</error-code>
+		<location>/error.jsp?code=405</location>
+	</error-page>
+	<error-page>
+		<error-code>406</error-code>
+		<location>/error.jsp?code=406</location>
+	</error-page>
+	<error-page>
+		<error-code>415</error-code>
+		<location>/error.jsp?code=415</location>
+	</error-page>
+	<error-page>
+		<error-code>400</error-code>
+		<location>/error.jsp?code=400</location>
+	</error-page>
+	<!-- 错误页面设置 结束 -->
+
+</web-app>
